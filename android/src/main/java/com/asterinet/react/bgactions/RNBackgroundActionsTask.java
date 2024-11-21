@@ -37,12 +37,13 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService {
         if (linkingURI != null) {
             notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(linkingURI));
         } else {
-            //as RN works on single activity architecture - we don't need to find current activity on behalf of react context
+            // As RN works on single activity architecture, we don't need to find current activity
             notificationIntent = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER);
         }
+
         final PendingIntent contentIntent;
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            contentIntent = PendingIntent.getActivity(context,0, notificationIntent, PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT);
+            contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_MUTABLE);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -50,6 +51,7 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService {
         } else {
             contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         }
+
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle(taskTitle)
                 .setContentText(taskDesc)
@@ -85,12 +87,19 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService {
         if (extras == null) {
             throw new IllegalArgumentException("Extras cannot be null");
         }
+
         final BackgroundTaskOptions bgOptions = new BackgroundTaskOptions(extras);
         createNotificationChannel(bgOptions.getTaskTitle(), bgOptions.getTaskDesc()); // Necessary creating channel for API 26+
+        
         // Create the notification
         final Notification notification = buildNotification(this, bgOptions);
 
-        startForeground(SERVICE_NOTIFICATION_ID, notification);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            startForeground(SERVICE_ID, notification)
+        } else {
+            startForeground(SERVICE_ID, notification, 
+            FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
+        }
         return super.onStartCommand(intent, flags, startId);
     }
 
