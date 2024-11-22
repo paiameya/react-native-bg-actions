@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -95,10 +96,10 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService {
         final Notification notification = buildNotification(this, bgOptions);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            startForeground(SERVICE_ID, notification)
+            startForeground(SERVICE_NOTIFICATION_ID, notification);
         } else {
-            startForeground(SERVICE_ID, notification, 
-            FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
+            startForeground(SERVICE_NOTIFICATION_ID, notification, 
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
         }
         return super.onStartCommand(intent, flags, startId);
     }
