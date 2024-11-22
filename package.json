@@ -1,6 +1,6 @@
 {
   "name": "react-native-bg-actions",
-  "version": "1.0.0",
+  "version": "1.0.17",
   "description": "React Native background service library for running background tasks forever in Android & iOS",
   "keywords": [
     "react-native",
@@ -30,12 +30,11 @@
     "eslint:fix": "yarn eslint --fix",
     "test": "jest ./__tests__/",
     "declaration:build": "tsc -p ./declaration.tsconfig.json",
-    "prepublishOnly": "yarn declaration:build && yarn checkjs",
     "pods": "cd ios && pod install"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/paiameya/react-native-bg-actions.git"
+    "url": "git+https://github.com/paiameya/react-native-bg-actions.git"
   },
   "funding": {
     "type": "individual",
